@@ -117,7 +117,7 @@ store.setState({ metadata: { title: 'my stateful app' } });
 Creates new store with initial state. Takes optional parameters:
 
 - `onChange?: (state: State, prevState: State) => void`: function called when the state object changed 
-- `mergeFn?: (a: State, b: PartialDeep<State>): State`. Can be used to override the default shallow merge function. When the returned state object does not equal the current object (`===`) onChange will be triggered.
+- `mergeFn?: (a: State, b: StateUpdate): State`. Can be used to override the default shallow merge function. When the returned state object does not equal the current object (`===`) onChange will be triggered.
 
 #### `store.getState(): State`
 

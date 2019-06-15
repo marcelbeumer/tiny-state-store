@@ -17,7 +17,7 @@ npm i tiny-state-store
 
 ## Basic usage
 
-The basics of the lib are `getState` and `setState`. By default `setState` will do a shallow merge of the current state and the state update. In case you need a different merge strategy you can write a [custom merge function](#special-merge-fn-deep-merging-updates).
+The basics of the lib are `getState` and `setState`. By default `setState` will do a shallow merge of the current state and the state update. In case you need a different merge strategy you can write a [custom merge function](#example-merge-fn-deep-merging-updates).
 
 ```ts
 import createStore from 'tiny-state-store';

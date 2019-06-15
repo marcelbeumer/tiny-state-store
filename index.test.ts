@@ -1,7 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 import createStore, { MergeFn, shallowMerge } from '.';
-import { Test } from 'mocha';
 
 interface TestState {
   title: string | null;
@@ -20,7 +19,7 @@ const createInitialState = (): TestState => ({
 describe('creating a store', () => {
   it('supports passing custom merge fn', () => {
     const onChange = sinon.spy();
-    const mergeFn: MergeFn<TestState> = (a, b) => [{ ...a, ...b, duration: 999 }, true];
+    const mergeFn: MergeFn<TestState> = (a, b) => ({ ...a, ...b, duration: 999 });
     const store = createStore<TestState>(createInitialState(), onChange, mergeFn);
     store.setState({ title: 'hello' });
     assert.strictEqual(onChange.callCount, 1);
@@ -31,9 +30,9 @@ describe('creating a store', () => {
     });
   });
 
-  it('custom merge fn does not trigger onChange when returning false', () => {
+  it('custom merge fn does not trigger onChange when returning the same object', () => {
     const onChange = sinon.spy();
-    const mergeFn: MergeFn<TestState> = (a, b) => [{ ...a, ...b, duration: 999 }, false];
+    const mergeFn: MergeFn<TestState> = (a, b) => Object.assign(a, { ...b, duration: 999 });
     const store = createStore<TestState>(createInitialState(), onChange, mergeFn);
     store.setState({ title: 'hello' });
     assert.strictEqual(onChange.callCount, 0);

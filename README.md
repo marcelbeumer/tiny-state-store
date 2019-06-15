@@ -5,8 +5,8 @@ Small and super simple general purpose state store. Runs in node and the browser
 - [Installation](#installation)
 - [Basic usage](#basic-usage)
 - [Reacting on state changes](#reacting-on-state-changes)
-- [Example merge fn: special update data structure](#custom-merge-fn-special-update-data-structure)
-- [Example merge fn: deep merging updates](#special-merge-fn-deep-merging-updates)
+- [Example merge fn: special update data structure](#example-merge-fn-special-update-data-structure)
+- [Example merge fn: deep merging updates](#example-merge-fn-deep-merging-updates)
 - [API reference](#api-reference)
 
 ## Installation

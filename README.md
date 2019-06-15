@@ -33,7 +33,7 @@ console.log(store.getState());
 
 ## Reacting on state changes
 
-You can pass a onChange handler that will get called whenever the state changes. The default merge function will mark the state as changed when any of the (root level) properties changed.
+You can pass an onChange handler that will get called whenever the state object changes. State change is determined by a single `===` check on the root state object.
 
 ```ts
 import createStore, { OnChangeFn } from 'tiny-state-store';
@@ -51,7 +51,7 @@ store.setState({ title: 'my stateful app' });
 
 ## Example merge fn: special update data structure
 
-By default `setState` takes partial state updates, but by you can customize what structures `setState` understands by using a custom merge function. 
+By default `setState` takes partial state updates, but by you can customize what structures `setState` understands by using a custom merge function:
 
 ```ts
 import createStore, { shallowMerge, MergeFn } from 'tiny-state-store';
@@ -62,7 +62,7 @@ type AppStateUpdate = Partial<AppState> & { __special?: 'foo' | 'bar' };
 const mergeFn: MergeFn<AppState, AppStateUpdate> = (a, b) => {
   if (b.__special === 'foo') {
     // ...do something special
-    return [a, false];
+    return a
   }
   return shallowMerge(a, b);
 };
@@ -101,9 +101,8 @@ export const shallowChanged = (a: State, b: State) =>
 
 const mergeFn: MergeFn<AppState, DeepPartial<AppState>> = (a, b) => {
   const changed = shallowChanged(a, b) || shallowChanged(a.metadata, b.metadata || {});
-  if (!changed) return [a, false];
-  const state = { ...a, ...b, metadata: { ...a.metadata, ...b.metadata } };
-  return [state, true];
+  if (!changed) return a;
+  return { ...a, ...b, metadata: { ...a.metadata, ...b.metadata } };
 };
 
 const store = createStore<AppState, DeepPartial<AppState>>(initialState, null, mergeFn);
@@ -117,8 +116,8 @@ store.setState({ metadata: { title: 'my stateful app' } });
 
 Creates new store with initial state. Takes optional parameters:
 
-- `onChange?: (state: State, oldState: State) => void`: function called when the state changed. Here you can wire in your own bizz logic, event emitters, etc.
-- `mergeFn?: (a: State, b: PartialDeep<State>): [State, HasChanged]`. Can be used to override the merge function used when setting state to do something else than a basic shallow merge. Requires you to return an array with the state and a boolean indicating if the state actually changed (and onChange should be called).
+- `onChange?: (state: State, prevState: State) => void`: function called when the state object changed 
+- `mergeFn?: (a: State, b: StateUpdate): State`. Can be used to override the default shallow merge function. When the returned state object does not equal the current object (`===`) onChange will be triggered.
 
 #### `store.getState(): State`
 
@@ -126,4 +125,4 @@ Returns current state. WARNING: returned object is the actual current state obje
 
 #### `store.setState(update: StateUpdate): void`
 
-Sets partial state update. Per default the store does a basic shallow merge. It's possible to pass a custom merge function to `createStore` to implement deep merging and/or special logic.
+Sets partial state update and triggers "onChange" determined by a single `===` check on the root state object.

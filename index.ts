@@ -7,13 +7,12 @@ export interface Store<T extends State, U = Partial<T>> {
   setState(update: U): void;
 }
 
-export type HasChanged = boolean;
-export type MergeFn<T extends State, U = Partial<T>> = (a: T, b: U) => [T, HasChanged];
+export type MergeFn<T extends State, U = Partial<T>> = (a: T, b: U) => T;
 export type OnChangeFn<T extends State> = (state: T, prevState: T) => void;
 
-export function shallowMerge<T extends State>(a: T, b: Partial<T>): [T, HasChanged] {
+export function shallowMerge<T extends State>(a: T, b: Partial<T>): T {
   const changed = Object.keys(b).some(name => a[name] !== b[name]);
-  return [changed ? { ...a, ...b } : a, changed];
+  return changed ? { ...a, ...b } : a;
 }
 
 const createStore = <T extends State, U = Partial<T>>(
@@ -27,9 +26,8 @@ const createStore = <T extends State, U = Partial<T>>(
     getState: () => state,
     setState(update) {
       const prevState = state;
-      const [newState, hasChanged] = merge(state, update);
-      state = newState;
-      if (hasChanged && onChange) onChange(newState, prevState);
+      state = merge(state, update);
+      if (state !== prevState && onChange) onChange(state, prevState);
     }
   };
 };

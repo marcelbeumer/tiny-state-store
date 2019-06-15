@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Small and super simple general purpose state store",
   "main": "index.js",
-  "dependencies": {
-    "type-fest": "^0.5.2"
-  },
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",

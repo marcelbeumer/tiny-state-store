@@ -4,7 +4,7 @@ export interface State {
 
 export interface Store<T extends State, U = Partial<T>> {
   getState(): T;
-  setState(update: U): void;
+  update(update: U): void;
   subscribe(listener: Listener<T>): void;
   unsubscribe(listener: Listener<T>): void;
   setReducer(reducer: Reducer<T, U>): void;
@@ -30,7 +30,7 @@ const createStore = <T extends State, U = Partial<T>>(
   if (listener) listeners.push(listener);
   return {
     getState: () => state,
-    setState(update) {
+    update(update) {
       const prevState = state;
       state = reduce(state, update);
       if (state !== prevState) {
